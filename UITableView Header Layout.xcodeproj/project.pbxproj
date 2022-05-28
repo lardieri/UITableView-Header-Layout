@@ -29,6 +29,7 @@
 		DFF110E92842090000298EF1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DFF110EB2842090000298EF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFF110EC2842090000298EF1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DFF110F328420CA800298EF1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +46,7 @@
 		DFF110CE284208FD00298EF1 = {
 			isa = PBXGroup;
 			children = (
+				DFF110F328420CA800298EF1 /* README.md */,
 				DFF110D9284208FD00298EF1 /* UITableView Header Layout */,
 				DFF110D8284208FD00298EF1 /* Products */,
 			);
