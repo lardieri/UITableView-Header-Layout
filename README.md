@@ -8,6 +8,8 @@ The difficulty originates from the fact that UITableView does not use either tra
 
 This project shows how to create, size, and add a custom table header view in code. There are flags for using resizing masks or Auto Layout, and for using fixed child elements versus child elements in a UIStackView.
 
+It also shows how to dynamically resize the tableHeaderView. Tapping on the header randomly changes its size and updates the UITableView with the resized header. 
+
 ## Rules for sizing UITableView table header views
 
 The order of the following operations is important!   
@@ -32,3 +34,10 @@ The order of the following operations is important!
 
 4. If you **are** using Auto Layout, create constraints between the header and the table view for position and width. Auto Layout assumes it owns the header's entire frame (all 4 elements), so it overwrites the values for *origin* and *width* that the UITableView puts into the header view's frame. You need to add constraints that duplicate what the UITableView is doing. But you can't activate these constraints until the header is part of the table view's hierarchy or you will crash.
 
+5. When the size of the header view changes:
+
+    A) Calculate the new height of the header view.
+    
+    B) Update the header view's `.frame` property, changing only the height.
+    
+    C) Set the header view as the UITableView's `.tableHeaderView` property again, even though it's the same view. 

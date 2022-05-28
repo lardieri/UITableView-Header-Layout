@@ -13,9 +13,7 @@ const BOOL stackView = NO;
 
 
 
-const CGFloat kHeaderHeight = 80.0;
-
-@interface ViewController () <UITableViewDataSource>
+@interface ViewController () <UITableViewDataSource, UIGestureRecognizerDelegate>
 
 @property (nonatomic, readwrite) UITableView * tableView;
 
@@ -60,18 +58,25 @@ const CGFloat kHeaderHeight = 80.0;
         header = [self makeHeader];
     }
 
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    tap.numberOfTapsRequired = 1;
+    tap.delegate = self;
+    tap.cancelsTouchesInView = NO; // Required for child tableviews to work correctly
+    tap.name = @"Single-tap";
+    [header addGestureRecognizer:tap];
+
     // Second, set the header's frame with the correct height.
+    // Since the header's children determine its height, make sure the necessary constraints between the header and its children are set up by now.
     if (autoLayout) {
-        // If you *are* using Auto Layout, create a height constraint and force Auto Layout to calculate the frame.
-        // (If your header's height is determined by its children, make sure those constraints are set up by now.)
+        // If you *are* using Auto Layout, force a layout pass to make Auto Layout calculate a frame with the correct height.
         header.translatesAutoresizingMaskIntoConstraints = NO;
-        [header.heightAnchor constraintEqualToConstant:kHeaderHeight].active = YES;
         [header setNeedsLayout];
         [header layoutIfNeeded];
     } else {
         // If you're *not* using Auto Layout, fill in the frame yourself.
         // Height must be correct; don't worry about the other elements, they will get overwritten.
-        CGRect frameWithHeight = CGRectMake(0.0, 0.0, 0.0, kHeaderHeight);
+        CGFloat height = [header systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+        CGRect frameWithHeight = CGRectMake(0.0, 0.0, 0.0, height);
         header.frame = frameWithHeight;
         header.translatesAutoresizingMaskIntoConstraints = YES;
     }
@@ -92,6 +97,11 @@ const CGFloat kHeaderHeight = 80.0;
     }
 }
 
+- (void)handleGesture:(nonnull UIGestureRecognizer *)recognizer
+{
+    [self addHeader];
+}
+
 - (UIView *)makeHeader
 {
     UIView * header = [[UIView alloc] initWithFrame:CGRectZero];
@@ -100,7 +110,9 @@ const CGFloat kHeaderHeight = 80.0;
 
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.translatesAutoresizingMaskIntoConstraints = NO;
-    label.text = @"Hello world";
+    label.text = @"Tap to resize me!";
+    CGFloat fontSize = 2 * arc4random_uniform(30) + 6.0;
+    label.font = [UIFont systemFontOfSize:fontSize];
     label.textAlignment = NSTextAlignmentLeft;
     label.backgroundColor = UIColor.yellowColor;
     [header addSubview:label];
@@ -112,6 +124,7 @@ const CGFloat kHeaderHeight = 80.0;
     [header addSubview:separator];
 
     [NSLayoutConstraint activateConstraints:@[
+        [label.topAnchor constraintEqualToSystemSpacingBelowAnchor:header.topAnchor multiplier:1.0],
         [label.leadingAnchor constraintEqualToSystemSpacingAfterAnchor:header.leadingAnchor multiplier:1.0],
         [header.trailingAnchor constraintEqualToSystemSpacingAfterAnchor:label.trailingAnchor multiplier:1.0],
 
@@ -147,9 +160,12 @@ const CGFloat kHeaderHeight = 80.0;
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.translatesAutoresizingMaskIntoConstraints = NO;
     label.backgroundColor = UIColor.yellowColor;
-    label.text = @"Hello world";
+    label.text = @"Tap to resize me!";
+    CGFloat fontSize = 2 * arc4random_uniform(30) + 6.0;
+    label.font = [UIFont systemFontOfSize:fontSize];
     label.textAlignment = NSTextAlignmentLeft;
     [label setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
+    [label setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     [header addArrangedSubview:label];
 
     UIView * separator = [[UIView alloc] initWithFrame:CGRectZero];
